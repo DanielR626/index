@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Order - Past Tenses A2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .header .level-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .instructions h2 {
+            color: #5a67d8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .progress-container {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sentence-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .sentence-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sentence-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .tense-tag {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #5a67d8;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            min-height: 80px;
+            margin-bottom: 20px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .drop-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e2e8f0, #edf2f7);
+            border-radius: 10px;
+            min-height: 80px;
+            margin-bottom: 20px;
+            border: 3px dashed #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            background: linear-gradient(135deg, #c3dafe, #e2e8f0);
+            border-color: #764ba2;
+        }
+
+        .drop-zone-label {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .word {
+            display: inline-block;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 25px;
+            cursor: grab;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .word:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .word:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .word.dragging {
+            opacity: 0.5;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-check {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .btn-check:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-reset {
+            background: #e2e8f0;
+            color: #666;
+        }
+
+        .btn-reset:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .feedback {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #48bb78;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border-left: 4px solid #f56565;
+        }
+
+        .feedback .icon {
+            font-size: 1.3rem;
+            margin-right: 10px;
+        }
+
+        /* Final Screen */
+        .final-screen {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .final-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .final-screen .trophy {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .final-screen h2 {
+            color: #5a67d8;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .final-screen .score {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .final-screen .message {
+            color: #666;
+            line-height: 1.8;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            font-size: 1.1rem;
+        }
+
+        .final-screen .grammar-tip {
+            background: linear-gradient(135deg, #e2e8f0, #edf2f7);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .final-screen .grammar-tip h3 {
+            color: #5a67d8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .final-screen .grammar-tip ul {
+            color: #555;
+            padding-left: 20px;
+        }
+
+        .final-screen .grammar-tip li {
+            margin-bottom: 8px;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .word {
+                padding: 8px 14px;
+                font-size: 0.9rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 Put the Words in Order</h1>
+            <span class="subtitle">WRITING</span>
+            <span class="level-badge">A2</span>
+            <p style="margin-top: 15px; opacity: 0.9;">Pon en orden las palabras para formar oraciones</p>
+        </header>
+
+        <div class="instructions">
+            <h2>📋 Instructions</h2>
+            <p>Drag the words from the word bank to the answer zone to form correct sentences about childhood memories. Use your knowledge of <strong>Past Simple</strong>, <strong>Past Perfect</strong>, and <strong>"used to"</strong>.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #888;">💡 <em>Tip: You can also click on words to move them!</em></p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">Question <span id="currentQ">1</span> of <span id="totalQ">5</span></div>
+        </div>
+
+        <!-- Sentence 1 - Past Perfect -->
+        <div class="sentence-card active" id="sentence1">
+            <span class="sentence-number">1</span>
+            <span class="tense-tag">Past Perfect</span>
+            
+            <p class="drop-zone-label">📦 Word Bank:</p>
+            <div class="word-bank" id="bank1">
+                <span class="word" draggable="true">three</span>
+                <span class="word" draggable="true">grandmother</span>
+                <span class="word" draggable="true">Susana</span>
+                <span class="word" draggable="true">ago.</span>
+                <span class="word" draggable="true">an</span>
+                <span class="word" draggable="true">sent</span>
+                <span class="word" draggable="true">had</span>
+                <span class="word" draggable="true">weeks</span>
+                <span class="word" draggable="true">Email</span>
+                <span class="word" draggable="true">to</span>
+                <span class="word" draggable="true">her</span>
+            </div>
+            
+            <p class="drop-zone-label">✏️ Your Answer:</p>
+            <div class="drop-zone" id="answer1"></div>
+            
+            <div class="feedback" id="feedback1"></div>
+            
+            <div class="buttons">
+                <button class="btn btn-reset" onclick="resetSentence(1)">🔄 Reset</button>
+                <button class="btn btn-check" onclick="checkAnswer(1)">✓ Check Answer</button>
+                <button class="btn btn-next" id="next1" onclick="nextSentence(2)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Sentence 2 - Past Simple Question -->
+        <div class="sentence-card" id="sentence2">
+            <span class="sentence-number">2</span>
+            <span class="tense-tag">Past Simple - Question</span>
+            
+            <p class="drop-zone-label">📦 Word Bank:</p>
+            <div class="word-bank" id="bank2">
+                <span class="word" draggable="true">school?</span>
+                <span class="word" draggable="true">the</span>
+                <span class="word" draggable="true">you</span>
+                <span class="word" draggable="true">skip</span>
+                <span class="word" draggable="true">were</span>
+                <span class="word" draggable="true">Could</span>
+                <span class="word" draggable="true">rope</span>
+                <span class="word" draggable="true">primary</span>
+                <span class="word" draggable="true">with</span>
+                <span class="word" draggable="true">when</span>
+                <span class="word" draggable="true">at</span>
+                <span class="word" draggable="true">friends</span>
+                <span class="word" draggable="true">your</span>
+                <span class="word" draggable="true">you</span>
+                <span class="word" draggable="true">the</span>
+            </div>
+            
+            <p class="drop-zone-label">✏️ Your Answer:</p>
+            <div class="drop-zone" id="answer2"></div>
+            
+            <div class="feedback" id="feedback2"></div>
+            
+            <div class="buttons">
+                <button class="btn btn-reset" onclick="resetSentence(2)">🔄 Reset</button>
+                <button class="btn btn-check" onclick="checkAnswer(2)">✓ Check Answer</button>
+                <button class="btn btn-next" id="next2" onclick="nextSentence(3)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Sentence 3 - Past Simple Negative -->
+        <div class="sentence-card" id="sentence3">
+            <span class="sentence-number">3</span>
+            <span class="tense-tag">Past Simple - Negative</span>
+            
+            <p class="drop-zone-label">📦 Word Bank:</p>
+            <div class="word-bank" id="bank3">
+                <span class="word" draggable="true">this</span>
+                <span class="word" draggable="true">relatives</span>
+                <span class="word" draggable="true">year.</span>
+                <span class="word" draggable="true">come</span>
+                <span class="word" draggable="true">for</span>
+                <span class="word" draggable="true">didn't</span>
+                <span class="word" draggable="true">My</span>
+                <span class="word" draggable="true">Christmas</span>
+            </div>
+            
+            <p class="drop-zone-label">✏️ Your Answer:</p>
+            <div class="drop-zone" id="answer3"></div>
+            
+            <div class="feedback" id="feedback3"></div>
+            
+            <div class="buttons">
+                <button class="btn btn-reset" onclick="resetSentence(3)">🔄 Reset</button>
+                <button class="btn btn-check" onclick="checkAnswer(3)">✓ Check Answer</button>
+                <button class="btn btn-next" id="next3" onclick="nextSentence(4)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Sentence 4 - Past Simple -->
+        <div class="sentence-card" id="sentence4">
+            <span class="sentence-number">4</span>
+            <span class="tense-tag">Past Simple</span>
+            
+            <p class="drop-zone-label">📦 Word Bank:</p>
+            <div class="word-bank" id="bank4">
+                <span class="word" draggable="true">vacations.</span>
+                <span class="word" draggable="true">I</span>
+                <span class="word" draggable="true">the</span>
+                <span class="word" draggable="true">beach</span>
+                <span class="word" draggable="true">went</span>
+                <span class="word" draggable="true">summer</span>
+                <span class="word" draggable="true">to</span>
+                <span class="word" draggable="true">family</span>
+                <span class="word" draggable="true">every</span>
+                <span class="word" draggable="true">and</span>
+                <span class="word" draggable="true">My</span>
+            </div>
+            
+            <p class="drop-zone-label">✏️ Your Answer:</p>
+            <div class="drop-zone" id="answer4"></div>
+            
+            <div class="feedback" id="feedback4"></div>
+            
+            <div class="buttons">
+                <button class="btn btn-reset" onclick="resetSentence(4)">🔄 Reset</button>
+                <button class="btn btn-check" onclick="checkAnswer(4)">✓ Check Answer</button>
+                <button class="btn btn-next" id="next4" onclick="nextSentence(5)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Sentence 5 - Used to -->
+        <div class="sentence-card" id="sentence5">
+            <span class="sentence-number">5</span>
+            <span class="tense-tag">Used to - Question</span>
+            
+            <p class="drop-zone-label">📦 Word Bank:</p>
+            <div class="word-bank" id="bank5">
+                <span class="word" draggable="true">to</span>
+                <span class="word" draggable="true">the</span>
+                <span class="word" draggable="true">tales?</span>
+                <span class="word" draggable="true">Did</span>
+                <span class="word" draggable="true">read</span>
+                <span class="word" draggable="true">classmates</span>
+                <span class="word" draggable="true">story</span>
+                <span class="word" draggable="true">use</span>
+                <span class="word" draggable="true">new</span>
+            </div>
+            
+            <p class="drop-zone-label">✏️ Your Answer:</p>
+            <div class="drop-zone" id="answer5"></div>
+            
+            <div class="feedback" id="feedback5"></div>
+            
+            <div class="buttons">
+                <button class="btn btn-reset" onclick="resetSentence(5)">🔄 Reset</button>
+                <button class="btn btn-check" onclick="checkAnswer(5)">✓ Check Answer</button>
+                <button class="btn btn-next" id="next5" onclick="showFinalScreen()">Finish →</button>
+            </div>
+        </div>
+
+        <!-- Final Screen -->
+        <div class="final-screen" id="finalScreen">
+            <div class="trophy">🏆</div>
+            <h2>Great job!</h2>
+            <div class="score" id="finalScore">0/5</div>
+            <p class="message">You identified all the past verbs in the text. <strong>Past Simple</strong> and <strong>"used to"</strong> help us talk about childhood memories.</p>
+            
+            <div class="grammar-tip">
+                <h3>💡 Grammar Tips</h3>
+                <ul>
+                    <li><strong>Past Simple:</strong> Use for completed actions in the past (went, didn't come, could)</li>
+                    <li><strong>Past Perfect:</strong> Use for actions completed before another past action (had sent)</li>
+                    <li><strong>"Used to":</strong> Use for past habits or states that are no longer true (use to read)</li>
+                </ul>
+            </div>
+            
+            <button class="btn-restart" onclick="restartActivity()">🔄 Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Correct answers
+        const correctAnswers = {
+            1: "Susana had sent an Email to her grandmother three weeks ago.",
+            2: "Could you skip the rope with your friends when you were at the primary school?",
+            3: "My relatives didn't come for Christmas this year.",
+            4: "My family and I went to the beach every summer vacations.",
+            5: "Did the new classmates use to read story tales?"
+        };
+
+        let score = 0;
+        let draggedElement = null;
+
+        // Initialize drag and drop
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+        });
+
+        function initializeDragAndDrop() {
+            // Add drag events to all words
+            document.querySelectorAll('.word').forEach(word => {
+                word.addEventListener('dragstart', handleDragStart);
+                word.addEventListener('dragend', handleDragEnd);
+                // Click to move
+                word.addEventListener('click', handleWordClick);
+                // Touch support
+                word.addEventListener('touchstart', handleTouchStart, {passive: false});
+                word.addEventListener('touchmove', handleTouchMove, {passive: false});
+                word.addEventListener('touchend', handleTouchEnd);
+            });
+
+            // Add drop events to all zones
+            document.querySelectorAll('.word-bank, .drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+            });
+        }
+
+        // Click to move words between zones
+        function handleWordClick(e) {
+            const word = e.target;
+            const parent = word.parentElement;
+            const sentenceNum = parent.id.replace('bank', '').replace('answer', '');
+            
+            if (parent.classList.contains('word-bank')) {
+                // Move to answer zone
+                const answerZone = document.getElementById('answer' + sentenceNum);
+                answerZone.appendChild(word);
+            } else if (parent.classList.contains('drop-zone')) {
+                // Move back to word bank
+                const wordBank = document.getElementById('bank' + sentenceNum);
+                wordBank.appendChild(word);
+            }
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (this.classList.contains('drop-zone')) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            if (draggedElement) {
+                this.appendChild(draggedElement);
+            }
+        }
+
+        // Touch support for mobile
+        let touchElement = null;
+        let touchClone = null;
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            touchElement = this;
+            
+            // Create a clone for visual feedback
+            touchClone = this.cloneNode(true);
+            touchClone.style.position = 'fixed';
+            touchClone.style.pointerEvents = 'none';
+            touchClone.style.opacity = '0.8';
+            touchClone.style.zIndex = '1000';
+            document.body.appendChild(touchClone);
+            
+            const touch = e.touches[0];
+            touchClone.style.left = (touch.clientX - 50) + 'px';
+            touchClone.style.top = (touch.clientY - 25) + 'px';
+            
+            this.style.opacity = '0.3';
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (touchClone) {
+                const touch = e.touches[0];
+                touchClone.style.left = (touch.clientX - 50) + 'px';
+                touchClone.style.top = (touch.clientY - 25) + 'px';
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (touchElement) {
+                touchElement.style.opacity = '1';
+            }
+            
+            if (touchClone) {
+                const touch = e.changedTouches[0];
+                const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                if (dropZone) {
+                    const zone = dropZone.closest('.word-bank, .drop-zone');
+                    if (zone && touchElement) {
+                        zone.appendChild(touchElement);
+                    }
+                }
+                
+                document.body.removeChild(touchClone);
+                touchClone = null;
+            }
+            
+            touchElement = null;
+        }
+
+        function checkAnswer(num) {
+            const answerZone = document.getElementById('answer' + num);
+            const words = answerZone.querySelectorAll('.word');
+            const feedback = document.getElementById('feedback' + num);
+            const nextBtn = document.getElementById('next' + num);
+            
+            let userAnswer = '';
+            words.forEach(word => {
+                userAnswer += word.textContent.trim() + ' ';
+            });
+            userAnswer = userAnswer.trim().replace(/\s+/g, ' ');
+            
+            const correct = correctAnswers[num].trim().replace(/\s+/g, ' ');
+            
+            if (userAnswer === correct) {
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = '<span class="icon">✅</span> Excellent! That\'s correct!';
+                feedback.style.display = 'block';
+                score++;
+                nextBtn.style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = '<span class="icon">❌</span> Not quite. Try again! <br><small>Hint: ' + correct + '</small>';
+                feedback.style.display = 'block';
+            }
+        }
+
+        function resetSentence(num) {
+            const bank = document.getElementById('bank' + num);
+            const answer = document.getElementById('answer' + num);
+            const feedback = document.getElementById('feedback' + num);
+            
+            // Move all words back to bank
+            const words = answer.querySelectorAll('.word');
+            words.forEach(word => {
+                bank.appendChild(word);
+            });
+            
+            feedback.style.display = 'none';
+        }
+
+        function nextSentence(num) {
+            // Hide current, show next
+            document.querySelectorAll('.sentence-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.getElementById('sentence' + num).classList.add('active');
+            
+            // Update progress
+            document.getElementById('currentQ').textContent = num;
+            document.getElementById('progressFill').style.width = ((num - 1) / 5 * 100) + '%';
+        }
+
+        function showFinalScreen() {
+            document.querySelectorAll('.sentence-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.getElementById('finalScreen').classList.add('active');
+            document.getElementById('finalScore').textContent = score + '/5';
+            document.getElementById('progressFill').style.width = '100%';
+        }
+
+        function restartActivity() {
+            score = 0;
+            document.getElementById('finalScreen').classList.remove('active');
+            
+            // Reset all sentences
+            for (let i = 1; i <= 5; i++) {
+                resetSentence(i);
+                document.getElementById('next' + i).style.display = 'none';
+            }
+            
+            // Show first sentence
+            document.getElementById('sentence1').classList.add('active');
+            document.getElementById('currentQ').textContent = '1';
+            document.getElementById('progressFill').style.width = '0%';
+        }
+    </script>
+</body>
+</html>
